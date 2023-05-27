@@ -1,0 +1,1 @@
+# [Tech Design] Strategy Component
