@@ -26,7 +26,15 @@ class BasePosition(ABC):
             new_price
         )
 
-class EquityPosition(BasePosition):
+    def __str__(self):
+       """Returns a string representation of the position.
+
+       Returns:
+           str: String representation of the position.
+       """
+       return f"Position:\nSymbol: {self.symbol}\nQuantity: {self.quantity}\nEntry Price: {self.entry_price}\nCreated Time: {self.created_time}\nUpdated Time: {self.updated_time}"
+
+class InstrumentPosition(BasePosition):
 
     def __init__(
         self,
@@ -37,16 +45,11 @@ class EquityPosition(BasePosition):
         updated_time: datetime = None
     ):
         super().__init__(symbol, quantity, entry_price, created_time, updated_time)
+        self.market_price = entry_price # wonky: validate against source of truth
 
-    def update_entry_price(self, new_price) -> 'EquityPosition':
-
-        return EquityPosition(
-            self.symbol,
-            self.quantity,
-            new_price,
-            self.created_time,
-            datetime.now()
-        )
+    def update_market_price(self, market_price) -> None:
+        self.market_price = market_price
+        self.updated_time = datetime.now()
 
 class OrderPosition(BasePosition):
 
@@ -60,6 +63,7 @@ class OrderPosition(BasePosition):
         updated_time: datetime = None
     ):
         super().__init__(symbol, quantity, entry_price, created_time, updated_time)
+        self.order_type = order_type
 
     def update_entry_price(self, new_price) -> 'OrderPosition':
 

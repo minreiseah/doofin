@@ -3,8 +3,15 @@ class BaseOrder:
         self,
         symbol: str,
         quantity: int,
-        side: str
+        side: str 
     ):
+        """_summary_
+
+        Args:
+            symbol (str): _description_
+            quantity (int): _description_
+            side (str): long or short.
+        """
         self.symbol = symbol
         self.quantity = quantity
         self.side = side
