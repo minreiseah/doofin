@@ -2,6 +2,9 @@
 
 ## Glossary
 
+- Data client: data provider such as ibkr or tiingo
+- Execution client: exchange such as ibkr or binance
+
 ## Introduction
 
 ### What are we building
@@ -46,6 +49,8 @@ This main component serves as the "engine" to integrate with the data and portfo
 
 #### Executing strategies
 
+- [P0] Write up different types of order
+- [P0] Pass order on to execution component
 - [P1] Support trigger based strategies
 - [P1] Support timed, scheduled (probing) based strategies
 
