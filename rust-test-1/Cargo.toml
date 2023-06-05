@@ -1,0 +1,12 @@
+[package]
+name = "rust-test-1"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+twsapi = "0.1.0"
+log = "0.4.0"
+chrono = "0.4.0"
+bigdecimal = "0.3.0"
