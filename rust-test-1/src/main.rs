@@ -7,7 +7,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
-//mod neowrapper;
+mod neowrapper;
 //use neowrapper::sq;
 
 fn main() -> Result<(), IBKRApiLibError> {
