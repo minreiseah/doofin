@@ -18,9 +18,12 @@ use log::*;
 use bigdecimal::BigDecimal;
 use chrono::{DateTime, Utc};
 
+// ################################
+// Test function.
 pub fn sq(a: i32) -> i32 {
     a * a
 }
+// ################################
 
 pub struct NeoWrapper<T: Streamer + 'static> {
     pub client: Option<Arc<Mutex<EClient<NeoWrapper<T>>>>>,
@@ -61,7 +64,6 @@ impl<T: Streamer> NeoWrapper<T> {
 }
 
 // TODO Store the logged output somewhere
-// TODO Resolve the types for security_definition_option_parameter
 
 /// Implementing the Wrapper trait from twsapi for NeoWrapper.
 /// This logs everything, but at the moment the logged output isn't stored anywhere
