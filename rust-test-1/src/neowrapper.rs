@@ -41,6 +41,20 @@ impl<T: Streamer> NeoWrapper<T> {
         Ok(())
     }
 
+    fn order_operations_req(&mut self) -> Result<(), IBKRApiLibError> {
+        {
+            info!("req all open orders");
+            self.client
+                .as_ref()
+                .unwrap()
+                .lock()
+                .unwrap()
+                .req_all_open_orders();
+        }
+
+        Ok(())
+    }
+
     // Write order_operations_req
 
     // TODO Implement methods
@@ -526,7 +540,7 @@ where
         trading_class: &str,
         multiplier: &str,
         expirations: HashSet<String>,
-        strikes: HashSet<BigDecimal>,
+        strikes: HashSet<BigDecimal>
     ) {
         info!(
             "tick_option_computation -- req_id: {}, exchange: {}, underlying_con_id: {}, \

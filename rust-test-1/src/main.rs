@@ -7,13 +7,15 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
+use crate::neowrapper::NeoWrapper;
+
 mod neowrapper;
 //use neowrapper::sq;
 
 fn main() -> Result<(), IBKRApiLibError> {
    println!("grink...");
 
-   let wrapper = Arc::new(Mutex::new(TestWrapper::<TcpStreamer>::new()));
+   let wrapper = Arc::new(Mutex::new(NeoWrapper::<TcpStreamer>::new()));
    let app = Arc::new(Mutex::new(EClient::new(wrapper.clone())));
 
    println!("getting connection...");
