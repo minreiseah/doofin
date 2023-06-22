@@ -2,7 +2,7 @@ use amqprs::{
     callbacks::{DefaultChannelCallback, DefaultConnectionCallback},
     channel::{
         BasicConsumeArguments, BasicPublishArguments, QueueBindArguments, QueueDeclareArguments,
-        ExchangeDeclareArguments
+        ExchangeDeclareArguments, BasicGetArguments
     },
     connection::{Connection, OpenConnectionArguments},
     consumer::DefaultConsumer,
@@ -86,7 +86,7 @@ async fn main() {
         &portfolio_sub_name, "execution_pub", "execution_data")).await.unwrap();
     // end bind queues to exchange
 
-    println!("Publisher and subscriber queues and message channels initialised!");
+    println!("Pub/Sub queues and message channels initialised!");
 
     // Test messages
     let test_data_pub = String::from(
@@ -135,8 +135,18 @@ async fn main() {
     channel.basic_publish(BasicProperties::default(), test_data_pub, strategy_eat)
         .await.unwrap();
 
+
+    let noods = BasicConsumeArguments::new(&strategy_sub_name, "");
+    //let temp = channel.basic_consume(DefaultConsumer::new(noods.no_ack), noods).await.unwrap();
+    let temp = channel.basic_get(BasicGetArguments::new(&strategy_sub_name))
+        .await.unwrap().unwrap().2;
+
+    let messagered = String::from_utf8_lossy(&temp).to_string();
+
+    println!("{}", messagered);
+
     // End everything nicely.
-    time::sleep(time::Duration::from_secs(3)).await;
+    time::sleep(time::Duration::from_secs(1)).await;
 
     channel.close().await.unwrap();
     println!("Channel closed.");
