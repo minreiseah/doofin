@@ -1,6 +1,7 @@
 use twsapi::core::errors::IBKRApiLibError;
 use twsapi::core::client::*;
 use twsapi::core::streamer::{Streamer, TcpStreamer};
+use twsapi::core::contract::*;
 // use twsapi::core::wrapper::Wrapper;
 // use twsapi::examples::test_helpers::TestWrapper;
 use std::sync::{Arc, Mutex};
@@ -14,6 +15,8 @@ use neowrapper::sq;
 
 fn main() -> Result<(), IBKRApiLibError> {
    println!("grink...");
+
+   let asdf = Contract::new;
 
    let wrapper = Arc::new(Mutex::new(NeoWrapper::<TcpStreamer>::new()));
    //let app = Arc::new(Mutex::new(EClient::new(wrapper.clone())));
