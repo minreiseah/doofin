@@ -11,32 +11,94 @@ use amqprs::{
 use tokio::time;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
-// uncomment this for backtrace
+// uncomment next line for backtrace
 //use std::env;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 2)]
 async fn main() {
+    // uncomment next line for backtrace
     //env::set_var("RUST_BACKTRACE", "1");
     
     println!("Hello, world!");
 
-    // OpenConnectionArguments::new is the only important method for this struct
-    let connectionDetails = OpenConnectionArguments::new(
-        "localhost",
-        5672,
-        "goofy",
-        "goofu"
-    );
+    /* Default credentials are
+    username: guest
+    password: guest
+    The username "goofy" with password "goofu" is something I set up on my local server */
+    let connection_details = OpenConnectionArguments
+        ::new("localhost", 5672, "goofy", "goofu");
 
-    let connection = Connection::open(&connectionDetails).await.unwrap();
+    let connection = Connection::open(&connection_details).await.unwrap();
+    connection.register_callback(DefaultConnectionCallback).await.unwrap(); // register_callback is allegedly important, but idk what it does - JY
 
-    println!("check");
+    // declare channel
+    // ::new is for transient channels (deleted when server restarts)
+    // ::durable_client_named is for durable channels (stays when server restarts)
 
-    // setting up an exchange
-    let newExchange = ExchangeDeclareArguments::new("goof", "Fanout");
+    let channel = connection.open_channel(None).await.unwrap();
+    channel.register_callback(DefaultChannelCallback).await.unwrap(); // once again, idk what register_callback does
+
+    // declare publisher channels
+    let data_publisher = channel
+        .exchange_declare(ExchangeDeclareArguments::new("data_pub", "fanout"))
+        .await.unwrap();
+
+    let strategy_publisher = channel
+        .exchange_declare(ExchangeDeclareArguments::new("strategy_pub", "fanout"))
+        .await.unwrap();
+
+    let execution_publisher = channel
+        .exchange_declare(ExchangeDeclareArguments::new("execution_pub", "fanout"))
+        .await.unwrap();
+
+    let portfolio_publisher = channel
+        .exchange_declare(ExchangeDeclareArguments::new("portfolio_pub", "fanout"))
+        .await.unwrap();
+    // end declare publisher channels
+
+    // declare message queues
+    // queue_declare returns a (String, AmqpMessageCount, u32)
+    let (strategy_sub_name, _, _) = channel
+        .queue_declare(QueueDeclareArguments::new("strategy_sub"))
+        .await.unwrap().unwrap();
+
+    let (execution_sub_name, _, _) = channel
+        .queue_declare(QueueDeclareArguments::new("execution_sub"))
+        .await.unwrap().unwrap();
+
+    let (portfolio_sub_name, _, _) = channel
+        .queue_declare(QueueDeclareArguments::new("portfolio_sub"))
+        .await.unwrap().unwrap();
+    // end declare message queues
+
+    // Bind queues to exchange
+    channel.queue_bind(QueueBindArguments::new(
+        &strategy_sub_name, "data_pub", "data_data")).await.unwrap();
+
+    channel.queue_bind(QueueBindArguments::new(
+        &strategy_sub_name, "portfolio_pub", "portfolio_data")).await.unwrap();
+
+    channel.queue_bind(QueueBindArguments::new(
+        &execution_sub_name, "strategy_pub", "strategy_data")).await.unwrap();
+
+    channel.queue_bind(QueueBindArguments::new(
+        &portfolio_sub_name, "execution_pub", "execution_data")).await.unwrap();
+    // end bind queues to exchange
+
+    println!("Publisher and subscriber queues and message channels initialised!");
+
+
+    // End everything nicely.
+    time::sleep(time::Duration::from_secs(3)).await;
+
+    channel.close().await.unwrap();
+    println!("Channel closed.");
+    time::sleep(time::Duration::from_secs(1)).await;
+
+    connection.close().await.unwrap();
+    println!("Connection closed.");
 
 }
-
 /*
 tracing_subscriber::registry()
         .with(fmt::layer())
