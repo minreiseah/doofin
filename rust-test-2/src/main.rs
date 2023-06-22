@@ -39,19 +39,19 @@ async fn main() {
     channel.register_callback(DefaultChannelCallback).await.unwrap(); // once again, idk what register_callback does
 
     // declare publisher channels
-    let data_publisher = channel
+    let _data_publisher = channel
         .exchange_declare(ExchangeDeclareArguments::new("data_pub", "fanout"))
         .await.unwrap();
 
-    let strategy_publisher = channel
+    let _strategy_publisher = channel
         .exchange_declare(ExchangeDeclareArguments::new("strategy_pub", "fanout"))
         .await.unwrap();
 
-    let execution_publisher = channel
+    let _execution_publisher = channel
         .exchange_declare(ExchangeDeclareArguments::new("execution_pub", "fanout"))
         .await.unwrap();
 
-    let portfolio_publisher = channel
+    let _portfolio_publisher = channel
         .exchange_declare(ExchangeDeclareArguments::new("portfolio_pub", "fanout"))
         .await.unwrap();
     // end declare publisher channels
@@ -72,8 +72,9 @@ async fn main() {
     // end declare message queues
 
     // Bind queues to exchange
+    let data_data = "data_pub";
     channel.queue_bind(QueueBindArguments::new(
-        &strategy_sub_name, "data_pub", "data_data")).await.unwrap();
+        &strategy_sub_name, data_data, "data_data")).await.unwrap();
 
     channel.queue_bind(QueueBindArguments::new(
         &strategy_sub_name, "portfolio_pub", "portfolio_data")).await.unwrap();
@@ -87,6 +88,52 @@ async fn main() {
 
     println!("Publisher and subscriber queues and message channels initialised!");
 
+    // Test messages
+    let test_data_pub = String::from(
+        r#"
+            {
+                "publisher": "data"
+                "data": "Test data_pub"
+            }
+        "#,
+    ).into_bytes();
+
+    let _test_strategy_pub = String::from(
+        r#"
+            {
+                "publisher": "strategy"
+                "data": "Test strategy_pub"
+            }
+        "#,
+    ).into_bytes();
+
+    let _test_execution_pub = String::from(
+        r#"
+            {
+                "publisher": "execution"
+                "data": "Test execution_pub"
+            }
+        "#,
+    ).into_bytes();
+
+    let _test_portfolio_pub = String::from(
+        r#"
+            {
+                "publisher": "data"
+                "data": "Test portfolio_pub"
+            }
+        "#,
+    ).into_bytes();
+    // end test messages
+
+    //let strategy_eat = BasicConsumeArguments::new("strategy_sub", "cons-tag");
+    //channel.basic_consume(DefaultConsumer::new(strategy_eat.no_ack), strategy_eat).await.unwrap();
+
+    // Publishes a message
+    // Note: NEED TO CLEAN THIS UP!
+    let strategy_eat = BasicPublishArguments::new("data_pub", data_data);
+    channel.basic_publish(BasicProperties::default(), test_data_pub, strategy_eat)
+        .await.unwrap();
 
     // End everything nicely.
     time::sleep(time::Duration::from_secs(3)).await;
@@ -99,65 +146,3 @@ async fn main() {
     println!("Connection closed.");
 
 }
-/*
-tracing_subscriber::registry()
-        .with(fmt::layer())
-        .with(EnvFilter::from_default_env())
-        .try_init()
-        .ok();
-
-    let fargs = OpenConnectionArguments::new(
-        "amqps://xqxkltrn:rjhkj5eTc_kwSNQW2SLi4cQQLqs62VrC@armadillo.rmq.cloudamqp.com/xqxkltrn", // url
-        5672,
-        "xqxkltrn", // username
-        "rjhkj5eTc_kwSNQW2SLi4cQQLqs62VrC", // password
-    );
-
-    let connection = Connection::open(&fargs).await.unwrap();
-
-    println!("check");
-
-    connection.register_callback(DefaultConnectionCallback).await.unwrap();
-
-    // open a channel on the connection
-    let channel = connection.open_channel(None).await.unwrap();
-    channel.register_callback(DefaultChannelCallback).await.unwrap();
-
-    // declare channel
-    let (queue_name, _, _) = channel
-        .queue_declare(QueueDeclareArguments::durable_client_named("amqprs.examples.basic"))
-        .await
-        .unwrap()
-        .unwrap();
-
-    // bind the queue to exchange
-    let routing_key = "amqprs.example";
-    let exchange_name = "amq.topic";
-    channel.queue_bind(QueueBindArguments::new(
-        &queue_name,
-        exchange_name,
-        routing_key
-    )).await.unwrap();
-
-    let args = BasicConsumeArguments::new(&queue_name, "example_basic_pub_sub");
-    channel.basic_consume(DefaultConsumer::new(args.no_ack), args).await.unwrap();
-
-    // publish message
-    let content = String::from(
-        r#"
-            {
-                "publisher": "example"
-                "data": "Hello, amqprs!"
-            }
-        "#,
-    ).into_bytes();
-
-    // create args for basic publish
-    let args = BasicPublishArguments::new(exchange_name, routing_key);
-    channel.basic_publish(BasicProperties::default(), content, args).await.unwrap();
-
-    time::sleep(time::Duration::from_secs(1)).await;
-
-    channel.close().await.unwrap();
-    connection.close().await.unwrap();
- */
