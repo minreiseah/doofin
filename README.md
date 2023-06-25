@@ -19,9 +19,9 @@ Doofin is an extensible, easy-to-use trading system to deploy your strategies.
 4. Data platform that allows for uploading and extracting data
 
 We define success in the following manner:
-1. The platform _must be_ performant (low latency) and reliable (high availability)
-2. The platform _should be _flexible (support as many flows as possible)
-3. The platform _does not need to be_ scalable (handle high traffic)
+1. The platform *must be* performant (low latency) and reliable (high availability)
+2. The platform *should be* flexible (support as many flows as possible)
+3. The platform *does not need to be* scalable (handle high traffic)
 
 
 
@@ -29,14 +29,17 @@ We define success in the following manner:
 
 
 ![Architectural Overview of Running System](assets/milestone_two_architecture.png)
+
 Figure: Architectural Overview of Running System
 
 The system is broken down into four components, each embodying a feature: Strategy, Portfolio, Data, Execution. These components are glued together by our Message Broker (RabbitMQ). These components work together to facilitate _modularity_ and _loose coupling_.
 
 ![Message Flow Between Components](assets/message_flow.png)
+
 Figure: Message Flow Between Components
 
 ![Publish/Subscription Channels](assets/pub_sub_channels.png)
+
 Figure: Publish/Subscription Channels 
 
 Through our pub/sub architecture, each component is not directly aware of other components. Their only form of contact is through messages.
@@ -46,47 +49,33 @@ Through our pub/sub architecture, each component is not directly aware of other 
 > This is the expected user flow to get one’s automated trading system up and running. More details for each part of the flow are found under the **Features **section. Do refer to our [demo](https://github.com/minreiseah/orbital/blob/main/demo.ipynb) for a more thorough runthrough.
 
 1. **Initialising data component**
-
-- Integration with data clients (external)
-
-- Integration with data clients (internal)
+    - Integration with data clients (external)
+    - Integration with data clients (internal)
 
 The user *must* define the data clients they want to interact with. At minimum, _one_ data client has to be defined such as real-time market data streamed from [Interactive Brokers](https://www.interactivebrokers.com/en/home.php). For users’ convenience, this data stream will be predefined in the system and ready-to-use. This data client is used to guide their strategy on how to place orders.
 
 2. **Initialising execution component**
-
-- Integration with execution clients (external)
+    - Integration with execution clients (external)
 
 The user *may* decide to define the execution clients they want to interact with. By default, orders will be routed through Interactive Brokers.
 
 3. **Initialising portfolio**
-
-- Integrate with one strategy
-
-- Integrate with other strategies
+    - Integrate with one strategy
+    - Integrate with other strategies
 
 The user *may* set up a fresh portfolio for their strategy or connect their strategy to a pre-existing portfolio. The portfolio component allows the strategy to view:
-
     - Open positions
-
     - Open orders
-
     - Closed orders
-
     - Historical positions
-
     - Historical orders
 
 4. **Initialising strategy component**
-
-- Integration with data component
-
-- Integration with execution component
-
-- Integration with portfolio component
+    - Integration with data component
+    - Integration with execution component
+    - Integration with portfolio component
 
 The user *must* define a strategy to make decisions based on the **data** and **portfolio** components, and place trades via the **execution** component. How the trade decisions are made are at the discretion of the user.
-
 
 ## Features
 
@@ -106,7 +95,13 @@ To fulfil these two user stories, our strategy component needs the following fun
 
 #### Feature Design
 
-The strategy component will be linked to one thing: the message broker. Through the message broker, the strategy component will receive data from the data component, such as live market data. Through the message broker, the strategy component will also receive portfolio updates from the portfolio component, such as the current state of the portfolio. The strategy components will also replay order updates to the execution component through the message broker such as the placing, cancelling, or adjusting of orders.
+The strategy component will be linked to one thing: the message broker.
+
+Through the message broker, the strategy component will receive data from the data component, such as live market data.
+
+Through the message broker, the strategy component will also receive portfolio updates from the portfolio component, such as the current state of the portfolio.
+
+The strategy components will also replay order updates to the execution component through the message broker such as the placing, cancelling, or adjusting of orders.
 
 #### Feature Benefits
 
@@ -120,9 +115,7 @@ However, it is important that the user must write their own unit tests for the s
 
 ### Feature 2: Portfolio
 
-While portfolio data could be seen as just another data stream, the idea is that decisions
-
-should be made around the state of the portfolio. As such, more specific interfaces would be useful to more effectively capture the state of the portfolio or even actively identify the "bad" state of a portfolio.
+While portfolio data could be seen as just another data stream, the idea is that decisions should be made around the state of the portfolio. As such, more specific interfaces would be useful to more effectively capture the state of the portfolio or even actively identify the "bad" state of a portfolio.
 
 #### User Stories
 
@@ -137,7 +130,11 @@ To fulfil these three user stories, our strategy component needs the following f
 
 #### Feature Design
 
-The portfolio component will be linked to one thing: the message broker. Through the message broker, the portfolio component will receive data from the execution component, such as order fulfilments. The portfolio component will also relay portfolio state updates to the strategy component through the message broker.
+The portfolio component will be linked to one thing: the message broker.
+
+Through the message broker, the portfolio component will receive data from the execution component, such as order fulfilments.
+
+The portfolio component will also relay portfolio state updates to the strategy component through the message broker.
 
 #### Feature Benefits
 
@@ -147,11 +144,12 @@ The portfolio component will be linked to one thing: the message broker. Through
 #### Feature Testing
 
 We will test the portfolio component in the following ways:
-    1. Receiving and sending messages from the message broker properly. This involves the unit tests:
-        - Mocking portfolio state and passing it to the strategy component via the message broker
-        - Mocking order fulfilment messages from the execution component and relaying them to the portfolio component via the message broker
-        - Mocking true portfolio state from the execution component and relaying it to the portfolio component via the message broker
-    2. Consumption of events from message broker that correctly updates portfolio state
+
+1. Receiving and sending messages from the message broker properly. This involves the unit tests:
+    - Mocking portfolio state and passing it to the strategy component via the message broker
+    - Mocking order fulfilment messages from the execution component and relaying them to the portfolio component via the message broker
+    - Mocking true portfolio state from the execution component and relaying it to the portfolio component via the message broker
+2. Consumption of events from message broker that correctly updates portfolio state
 
 ### Feature 3: Data
 
@@ -172,6 +170,7 @@ To fulfil these three user stories, our data receiver needs the following functi
 To implement the above functionalities, we first use the `twsapi` crate to create a client and a wrapper that can send and receive messages through the TWS API. By default, the live data collection feature will only collect price and order book data. However, we aim to make the system extensible and allow the user to collect other types of data, such as information about options and contracts. This data is then converted through a message parser and formatter, before being passed to the message broker for receipt by other components of the system.
 
 ![Mock AAPL Data Client](assets/mock_aapl_data_client.png)
+
 Figure: Mocked Data Client
 
 If users wish to add their own data streams, they are currently able to implement time-series market data streams with `parquet` files that minimally follow the open-high-low-close configuration such as in our [mocked AAPL data](https://github.com/minreiseah/orbital/blob/main/orbital/data/mocked/AAPL.parquet) as shown above.
@@ -221,11 +220,12 @@ TODO: Support integration of multiple trading platforms, beyond Interactive Brok
 
 The message broker is the backbone of the trading system, allowing data to be passed between them. In the current phase of our project, the message broker will be a RabbitMQ server hosted on our local machine. For a quick introduction to RabbitMQ, refer to this [blog post]([https://www.cloudamqp.com/blog/part1-rabbitmq-for-beginners-what-is-rabbitmq.html](https://www.cloudamqp.com/blog/part1-rabbitmq-for-beginners-what-is-rabbitmq.html)).
 
-
 ![RabbitMQ Server](assets/rabbitmq_server.png)
+
 Figure: The RabbitMQ server on our laptop after starting the program.
 
-![RabbitMQ Payload](images/image6.png "image_tooltip")
+![RabbitMQ Payload](assets/rabbitmq_payload.png)
+
 Example of a payload sent through the message broker. The message format can be in JSON, or can come in other forms.
 
 #### User Stories
@@ -309,7 +309,7 @@ Given our current progress, the following table outlines a realistic and achieva
 
 ## Tech Stack
 
-### Languages and Key Libraries**
+### Languages and Key Libraries
 
 - Python: The top layer exposed to clients.
 - Rust: Where everything is written.
@@ -321,7 +321,7 @@ Additional libraries and tools used in the project will be updated as the projec
 
 ## Project Log
 
-Our project log can be viewed [here]([https://github.com/minreiseah/orbital/blob/main/docs/project_log.md](https://github.com/minreiseah/orbital/blob/main/docs/project_log.md)).
+Our project log can be viewed [here]([docs/project_log.md).
 
 ## Software Engineering Practices
 
@@ -337,7 +337,7 @@ We intend to integrate CI/CD to further ensure code quality. We also intend to b
 
 ![milestones](assets/milestones.png)
 
-![event_bus_milestone](assets/event_bus_milestone.png)
+![event bus milestone](assets/event_bus_milestone.png)
 
 ![issues](assets/issues.png)
 
