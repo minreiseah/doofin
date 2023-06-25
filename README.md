@@ -321,7 +321,7 @@ Additional libraries and tools used in the project will be updated as the projec
 
 ## Project Log
 
-Our project log can be viewed ![here]([https://github.com/minreiseah/orbital/blob/main/docs/project_log.md).
+Our project log can be viewed [here](https://github.com/minreiseah/orbital/blob/main/docs/project_log.md).
 
 ## Software Engineering Practices
 
