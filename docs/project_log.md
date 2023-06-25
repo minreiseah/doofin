@@ -23,3 +23,21 @@ We have made progress in understanding trading system architecture and experimen
 - Collaborated on defining the interface contracts between different components of the trading system; still a work in progress (5 hours)
 
 - Started implementing the core functionalities of the trading system, such as data ingestion and strategy execution (12 hours)
+
+## Week Four (40 hours total)
+
+- Meetings to resolve feedback from Milestone 1, decide project direction, update work; spent about 5 hours each
+
+- Learning how to use Rust, including features such as general syntax, memory allocation, ownership, and crate management; spent about 15 hours each
+
+## Week Five (30 hours total)
+
+- Trying to get the API to Interactive Brokers to work; about 15 hours each
+
+## Week Six (30 hours total)
+
+- Learning about pub/sub architectures, experimenting with RabbitMQ and Apache Kafka, and other things related to message brokering; about 15 hours each
+
+## Week Seven (20 hours total)
+
+- Meetings to update README, poster, and video; spent about 10 hours each
