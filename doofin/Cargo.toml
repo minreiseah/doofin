@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+  "data",
+  "portfolio",
+  "strategy",
+  "execution",
+  "common",
+]
