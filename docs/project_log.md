@@ -40,4 +40,16 @@ We have made progress in understanding trading system architecture and experimen
 
 ## Week Seven (20 hours total)
 
-- Meetings to update README, poster, and video; spent about 10 hours each
+- Meetings to resolve feedback from Milestone 2, bug fixes; spent about 10 hours each;
+
+## Week Eight (20 hours total)
+
+- Learning about how to write tests in python, wrote some test cases, refactored and rewrote some existing code; about 10 hours each
+
+## Week Nine (30 hours total)
+
+- Wrote up most unit tests and some integration tests, set up rust boilerplate for future development; about 15 hours each
+
+## Week Ten (30 hours total)
+
+- Finalised all unit and integration tests; about 15 hours each
