@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from orbital.model.tick import BaseTick
 from orbital.model.position import InstrumentPosition
 from orbital.model.order import BaseOrder
 from orbital.portfolio.base import Portfolio
@@ -14,7 +15,7 @@ class BaseStrategy(ABC):
         self.portfolio = portfolio
 
     @abstractmethod
-    def handle_data(self, data):
+    def handle_data(self, tick: BaseTick):
         raise NotImplementedError("Data handler not implemented.")
 
     def place_order(self, order: BaseOrder):

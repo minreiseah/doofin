@@ -1,6 +1,6 @@
 from orbital.model.order import BaseOrder, LimitOrder
 from orbital.model.position import InstrumentPosition
-from orbital.model.tick import MinuteTick
+from orbital.model.tick import BaseTick, BarTick
 from orbital.portfolio.base import Portfolio
 from orbital.strategy.base import BaseStrategy
 
@@ -13,7 +13,7 @@ class DemoStrategy(BaseStrategy):
     ):
         super().__init__(portfolio=portfolio)
 
-    def handle_data(self, data: MinuteTick):
+    def handle_data(self, data: BarTick):
         current_price = data.close
         symbol = data.symbol
 
