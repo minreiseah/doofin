@@ -1,6 +1,6 @@
 from datetime import datetime
 from functools import wraps
-from typing import List, Dict
+from typing import List, Dict, Union
 import pandas as pd
 
 from orbital.model.position import BasePosition, InstrumentPosition
@@ -125,14 +125,14 @@ class Portfolio:
         )
         
 
-    def get_position(self, symbol: str) -> InstrumentPosition:
+    def get_position(self, symbol: str) -> Union[BasePosition, None]:
         """Get position for a specific symbol.
 
         Args:
             symbol (str): The symbol of the position to retrieve.
 
         Returns:
-            List[BasePosition]: The list of position objects.
+            BasePosition: The corresponding position object
         """
 
         for position in self.positions:
@@ -148,8 +148,7 @@ class Portfolio:
         Returns:
             Dict: The total value of the portfolio.
         """
-        position_values = sum(
-            position.quantity * position.market_price for position in self.positions)
+        position_values = sum(position.quantity * position.market_price for position in self.positions)
 
         return self.cash + position_values
     
