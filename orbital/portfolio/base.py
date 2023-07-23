@@ -111,7 +111,6 @@ class Portfolio:
             self.cash -= position.quantity * position.entry_price
 
         if self.positions[index].quantity == -position.quantity:
-            print("REMOVED POSITION")
             self.positions.remove(self.positions[index])
             return
 
