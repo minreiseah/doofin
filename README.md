@@ -319,6 +319,15 @@ Given our current progress, the following table outlines a realistic and achieva
 
 Additional libraries and tools used in the project will be updated as the project progresses.
 
+## Testing
+
+We have both unit and integration testing done for our components. For code written in python, tests are under `https://github.com/minreiseah/orbital/tree/main/tests`.
+
+
+
+
+
+
 ## Project Log
 
 Our project log can be viewed [here](https://github.com/minreiseah/orbital/blob/main/docs/project_log.md).

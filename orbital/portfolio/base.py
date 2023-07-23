@@ -35,7 +35,7 @@ class Portfolio:
         self.positions = positions
         self.history = history
 
-    def on_update(func) -> None:
+    def on_update(func):
         """If a method uses the `on_update` decorator, the portfolio history will 
         be updated with the current state of the portfolio everytime the method is called.
 
@@ -52,7 +52,7 @@ class Portfolio:
         return wrapper
     
     @on_update
-    def update_position(self, position: InstrumentPosition) -> None:
+    def update_position(self, position: InstrumentPosition):
         """Updates an existing position in the portfolio or adds a new position.
 
         If a position with the same symbol already exists in the portfolio, the function updates
