@@ -6,8 +6,7 @@ from orbital.strategy.base import BaseStrategy
 from orbital.strategy.demo import DemoStrategy
 from orbital.portfolio.base import Portfolio
 
-from orbital.model.position import InstrumentPosition
-from orbital.model.order import BaseOrder, LimitOrder, MarketOrder
+from orbital.model.order import LimitOrder, MarketOrder
 from orbital.model.tick import BarTick
 
 STARTING_CASH = 1_000_000
@@ -76,6 +75,9 @@ def test_strategy_handle_data(
     my_strategy: BaseStrategy,
     mocker,
 ):
+    # mocked portfolio since this is a unit test
+    # portfolio testing is done within portfolio's unit test
+    # integration testing involves all components working together
     mocked_update_position = mocker.patch.object(Portfolio, "update_position")
     for tick in bar_ticks:
         my_strategy.handle_data(tick)
@@ -92,7 +94,7 @@ def test_place_limit_order_long_side(my_strategy, limit_order, mocker):
     assert called_position.quantity == limit_order.quantity
     assert called_position.entry_price == limit_order.price
 
-def test_base_strategy_handle_data(my_strategy, market_order):
+def test_strategy_handle_data(my_strategy, market_order):
     with pytest.raises(NotImplementedError, match="Market orders not yet implemented."):
         my_strategy.place_order(market_order)
 
