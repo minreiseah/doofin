@@ -4,11 +4,10 @@ from typing import Iterable, Dict
 import pandas as pd
 import asyncio
 
-from orbital.model.tick import MinuteTick # suboptimal but good enough for now
+from orbital.model.tick import BarTick
 
 
 class BaseDataClient(ABC):
-
     def __init__(self):
         self.subscribers = []
         self.data = None
@@ -54,7 +53,7 @@ class BaseDataClient(ABC):
         raise NotImplementedError("Fetching data is not implemented.")
 
 
-class MockMinuteDataClient(BaseDataClient):
+class MockBarTickDataClient(BaseDataClient):
     """There will be some sane/standard data clients for strategy components
     to hook into. e.g. MinuteDataClient(ticker="spy")
 
@@ -80,9 +79,9 @@ class MockMinuteDataClient(BaseDataClient):
         
         data_stream = df.iterrows()
 
-        def _generate() -> Iterable[MinuteTick]:
+        def _generate() -> Iterable[BarTick]:
             for _, row in data_stream:
-                tick = MinuteTick(
+                tick = BarTick(
                     timestamp=row['datetime'],
                     symbol=symbol,
                     open=row['open'],
@@ -95,6 +94,6 @@ class MockMinuteDataClient(BaseDataClient):
         
         self.data_stream = _generate()
 
-    def _fetch_data(self) -> MinuteTick:
+    def _fetch_data(self) -> BarTick:
         return next(self.data_stream)
 

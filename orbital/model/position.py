@@ -10,11 +10,12 @@ class BasePosition(ABC):
         quantity: int,
         entry_price: float,
         created_time: datetime = None,
-        updated_time: datetime = None
+        updated_time: datetime = None,
     ):
         self.symbol = symbol
         self.quantity = quantity
         self.entry_price = entry_price
+        self.market_price = entry_price
         self.created_time = created_time if created_time is not None else datetime.now()
         self.updated_time = updated_time if updated_time is not None else datetime.now()
     
@@ -71,6 +72,7 @@ class OrderPosition(BasePosition):
             self.symbol,
             self.quantity,
             new_price,
+            self.order_type,
             self.created_time,
             datetime.now()
         )

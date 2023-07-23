@@ -12,8 +12,8 @@ class BaseTick(ABC):
         self.timestamp = timestamp
 
 
-class MinuteTick(BaseTick):
-    """Represents a minute-based tick that contains OHLC (Open-High-Low-Close) price information for a financial instrument.
+class BarTick(BaseTick):
+    """Represents a minute-based *bar* tick that contains OHLC (Open-High-Low-Close) price information for a financial instrument.
 
     Args:
         timestamp (datetime): The timestamp of the tick.
@@ -26,7 +26,7 @@ class MinuteTick(BaseTick):
 
     Example:
         # Create a minute tick for Stock XYZ
-        tick = MinuteTick(
+        tick = BarTick(
             timestamp=datetime.now(),
             symbol="XYZ",
             open=100.50,

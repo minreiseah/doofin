@@ -1,6 +1,6 @@
 from datetime import datetime
 from functools import wraps
-from typing import List, Dict
+from typing import List, Dict, Union
 import pandas as pd
 
 from orbital.model.position import BasePosition, InstrumentPosition
@@ -35,7 +35,7 @@ class Portfolio:
         self.positions = positions
         self.history = history
 
-    def on_update(func) -> None:
+    def on_update(func):
         """If a method uses the `on_update` decorator, the portfolio history will 
         be updated with the current state of the portfolio everytime the method is called.
 
@@ -52,7 +52,7 @@ class Portfolio:
         return wrapper
     
     @on_update
-    def update_position(self, position: InstrumentPosition) -> None:
+    def update_position(self, position: InstrumentPosition):
         """Updates an existing position in the portfolio or adds a new position.
 
         If a position with the same symbol already exists in the portfolio, the function updates
@@ -103,14 +103,15 @@ class Portfolio:
             self.positions.append(position)
             return
 
-        if position.quantity < 0:
+        if position.quantity < 0: # sale
             realised_profit = (-position.quantity) * (position.entry_price - prev_position.entry_price)
             self.realised_profit += realised_profit
-            self.cash += realised_profit
-        else:
+            self.cash += (-position.quantity) * position.entry_price
+        else: # purchase
             self.cash -= position.quantity * position.entry_price
 
         if self.positions[index].quantity == -position.quantity:
+            print("REMOVED POSITION")
             self.positions.remove(self.positions[index])
             return
 
@@ -125,14 +126,14 @@ class Portfolio:
         )
         
 
-    def get_position(self, symbol: str) -> InstrumentPosition:
+    def get_position(self, symbol: str) -> Union[BasePosition, None]:
         """Get position for a specific symbol.
 
         Args:
             symbol (str): The symbol of the position to retrieve.
 
         Returns:
-            List[BasePosition]: The list of position objects.
+            BasePosition: The corresponding position object
         """
 
         for position in self.positions:
@@ -148,8 +149,7 @@ class Portfolio:
         Returns:
             Dict: The total value of the portfolio.
         """
-        position_values = sum(
-            position.quantity * position.market_price for position in self.positions)
+        position_values = sum(position.quantity * position.market_price for position in self.positions)
 
         return self.cash + position_values
     
