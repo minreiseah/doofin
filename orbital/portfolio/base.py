@@ -103,14 +103,15 @@ class Portfolio:
             self.positions.append(position)
             return
 
-        if position.quantity < 0:
+        if position.quantity < 0: # sale
             realised_profit = (-position.quantity) * (position.entry_price - prev_position.entry_price)
             self.realised_profit += realised_profit
-            self.cash += realised_profit
-        else:
+            self.cash += (-position.quantity) * position.entry_price
+        else: # purchase
             self.cash -= position.quantity * position.entry_price
 
         if self.positions[index].quantity == -position.quantity:
+            print("REMOVED POSITION")
             self.positions.remove(self.positions[index])
             return
 
