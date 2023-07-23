@@ -323,10 +323,7 @@ Additional libraries and tools used in the project will be updated as the projec
 
 We have both unit and integration testing done for our components. For code written in python, tests found [here](https://github.com/minreiseah/orbital/tree/main/tests).
 
-
-
-
-
+![evidence of unit and integration testing](assets/testing_screenshot.png)
 
 ## Project Log
 
