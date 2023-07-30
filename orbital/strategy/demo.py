@@ -25,6 +25,8 @@ class DemoStrategy(BaseStrategy):
         else:
             self._initiate_position(symbol, current_price)
 
+        self.portfolio.update_history(timestamp=data.timestamp)
+
     def _initiate_position(self, symbol: str, price: float):
         quantity = 100
 
@@ -32,7 +34,7 @@ class DemoStrategy(BaseStrategy):
             symbol=symbol,
             quantity=quantity,
             price=price,
-            side="long"
+            side="long",
         )
 
         self.place_order(order)
