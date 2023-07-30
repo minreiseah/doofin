@@ -10,6 +10,7 @@ class BaseTick(ABC):
 
     def __init__(self, timestamp: datetime):
         self.timestamp = timestamp
+        self.class_name = self.__class__.__name__
 
 
 class BarTick(BaseTick):
