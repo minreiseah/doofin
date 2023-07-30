@@ -395,4 +395,9 @@ To get Doofin up and running, please follow these steps:
    python3 -m pip install -r requirements.txt
    ```
 
-For a practical demonstration, refer to the `demo.ipynb` notebook in the main directory of this project. You can view this file directly on GitHub by navigating to this [link](https://github.com/minreiseah/orbital/blob/main/demo.ipynb).
+1. Set up the message broker.
+   ```shell
+   docker compose up
+   ```
+
+For a practical demonstration, refer to the `demo.ipynb` and `demo-mq.ipynb` notebooks in the main directory of this project. You can view this file directly on GitHub by navigating to this [link](https://github.com/minreiseah/orbital/blob/main/demo.ipynb).
