@@ -1,4 +1,5 @@
 import pika
+import pandas as pd
 
 from typing import List
 import json
@@ -23,10 +24,16 @@ class BacktestNode:
         channel = connection.channel()
         channel.queue_declare("tick")
 
+        def deserialize(obj):
+            if 'timestamp' in obj:
+                timestamp_str = obj['timestamp']
+                obj['timestamp'] = pd.Timestamp(timestamp_str)
+            return obj
+
         def callback(ch, method, properties, body):
-            tick_data = json.loads(body)
+            tick_data = json.loads(body, object_hook=deserialize)
             class_name = tick_data.pop('class_name', None)
-               
+
             if class_name is None:
                 # If class_name is not provided in the data, fallback to BaseTick
                 tick = BaseTick(**tick_data)
@@ -49,6 +56,7 @@ class BacktestNode:
         channel.start_consuming()
 
     def _start_publishing_ticks(self):
+
         connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
         channel = connection.channel()
         channel.queue_declare("tick")
