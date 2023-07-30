@@ -39,7 +39,7 @@ class BaseStrategy(ABC):
                 position = InstrumentPosition(
                     symbol=order.symbol,
                     quantity=order.quantity,
-                    entry_price=order.price
+                    entry_price=order.price,
                 )
             elif order.side == "short":
                 position = InstrumentPosition(

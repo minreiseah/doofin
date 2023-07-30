@@ -45,13 +45,23 @@ class Portfolio:
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             func(self, *args, **kwargs)
+            print(self.statistics())
             self.history.append(PortfolioState(
                 self.get_portfolio_value(),
                 datetime.now()
             ))
         return wrapper
     
-    @on_update
+    def update_history(self, timestamp = None):
+        if timestamp is None:
+            timestamp = datetime.now()
+
+        self.history.append(PortfolioState(
+            value=self.get_portfolio_value(),
+            created_time=timestamp
+        ))
+    
+    # @on_update
     def update_position(self, position: InstrumentPosition):
         """Updates an existing position in the portfolio or adds a new position.
 
@@ -90,40 +100,40 @@ class Portfolio:
         prev_position = None
         index = -1
 
+        # find previous position
         for i, pos in enumerate(self.positions):
              if position.symbol == pos.symbol:
                  prev_position = pos
                  index = i
                  break
 
-        if prev_position is None:
-            if position.quantity < 0:
-                raise NotImplementedError("Shorting not yet implemented.")
-            self.cash -= position.quantity * position.entry_price
-            self.positions.append(position)
-            return
+        # TODO
+        if prev_position is None and position.quantity < 0:
+            raise NotImplementedError("Shorting not yet implemented.")
 
-        if position.quantity < 0: # sale
+        # update cash/realised profits
+        if prev_position is None or position.quantity > 0: # purchase
+            self.cash -= position.quantity * position.entry_price
+        else: # sale
             realised_profit = (-position.quantity) * (position.entry_price - prev_position.entry_price)
             self.realised_profit += realised_profit
             self.cash += (-position.quantity) * position.entry_price
-        else: # purchase
-            self.cash -= position.quantity * position.entry_price
 
-        if self.positions[index].quantity == -position.quantity:
+        # update positions
+        if prev_position is None:
+            self.positions.append(position)
+        elif self.positions[index].quantity == -position.quantity:
             self.positions.remove(self.positions[index])
-            return
-
-        self.positions[index] = InstrumentPosition(
-            symbol=position.symbol,
-            quantity=prev_position.quantity + position.quantity,
-            entry_price=((prev_position.quantity * prev_position.entry_price +
-                         position.quantity * position.entry_price) /
-                         (prev_position.quantity + position.quantity)),
-            created_time=prev_position.created_time,
-            updated_time=position.created_time
-        )
-        
+        else:
+            self.positions[index] = InstrumentPosition(
+                symbol=position.symbol,
+                quantity=prev_position.quantity + position.quantity,
+                entry_price=((prev_position.quantity * prev_position.entry_price +
+                             position.quantity * position.entry_price) /
+                             (prev_position.quantity + position.quantity)),
+                created_time=prev_position.created_time,
+                updated_time=position.created_time
+            )
 
     def get_position(self, symbol: str) -> Union[BasePosition, None]:
         """Get position for a specific symbol.
