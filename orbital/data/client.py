@@ -71,6 +71,7 @@ class MockBarTickDataClient(BaseDataClient):
         super().__init__()
         if (file_type == 'parquet'):
             df = pd.read_parquet(data_file_path)
+            print(f"Data Client has {len(df)} ticks")
         else:
             raise NotImplementedError(f"Fetching data for {file_type} is not implemented.")
         

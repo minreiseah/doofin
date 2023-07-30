@@ -9,7 +9,7 @@ from datetime import datetime
 class BaseTick(ABC):
 
     def __init__(self, timestamp: datetime):
-        self.timestamp = timestamp
+        self.timestamp = timestamp.isoformat()
         self.class_name = self.__class__.__name__
 
 
