@@ -1,4 +1,4 @@
-# [Orbital] Doofin
+# Doofin
 
 ## Overview
 
@@ -46,7 +46,7 @@ Through our pub/sub architecture, each component is not directly aware of other 
 
 ## User Flow
 
-> This is the expected user flow to get one’s automated trading system up and running. More details for each part of the flow are found under the **Features **section. Do refer to our [demo](https://github.com/minreiseah/orbital/blob/main/demo.ipynb) for a more thorough runthrough.
+> This is the expected user flow to get one’s automated trading system up and running. More details for each part of the flow are found under the **Features **section. Do refer to our [demo](https://github.com/minreiseah/doofin/blob/main/demo.ipynb) for a more thorough runthrough.
 
 1. **Initialising data component**
     - Integration with data clients (external)
@@ -173,7 +173,7 @@ To implement the above functionalities, we first use the `twsapi` crate to creat
 
 Figure: Mocked Data Client
 
-If users wish to add their own data streams, they are currently able to implement time-series market data streams with `parquet` files that minimally follow the open-high-low-close configuration such as in our [mocked AAPL data](https://github.com/minreiseah/orbital/blob/main/orbital/data/mocked/AAPL.parquet) as shown above.
+If users wish to add their own data streams, they are currently able to implement time-series market data streams with `parquet` files that minimally follow the open-high-low-close configuration such as in our [mocked AAPL data](https://github.com/minreiseah/doofin/blob/main/orbital/data/mocked/AAPL.parquet) as shown above.
 
 #### Feature Benefits
 
@@ -321,13 +321,13 @@ Additional libraries and tools used in the project will be updated as the projec
 
 ## Testing
 
-We have both unit and integration testing done for our components. For code written in python, tests found [here](https://github.com/minreiseah/orbital/tree/main/tests).
+We have both unit and integration testing done for our components. For code written in python, tests found [here](https://github.com/minreiseah/doofin/tree/main/tests).
 
 ![evidence of unit and integration testing](assets/testing_screenshot.png)
 
 ## Project Log
 
-Our project log can be viewed [here](https://github.com/minreiseah/orbital/blob/main/docs/project_log.md).
+Our project log can be viewed [here](https://github.com/minreiseah/doofin/blob/main/docs/project_log.md).
 
 ## Software Engineering Practices
 
@@ -400,4 +400,4 @@ To get Doofin up and running, please follow these steps:
    docker compose up
    ```
 
-For a practical demonstration, refer to the `demo.ipynb` and `demo-mq.ipynb` notebooks in the main directory of this project. You can view this file directly on GitHub by navigating to this [link](https://github.com/minreiseah/orbital/blob/main/demo.ipynb).
+For a practical demonstration, refer to the `demo.ipynb` and `demo-mq.ipynb` notebooks in the main directory of this project. You can view this file directly on GitHub by navigating to this [link](https://github.com/minreiseah/doofin/blob/main/demo.ipynb).
